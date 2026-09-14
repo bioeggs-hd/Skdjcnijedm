@@ -1,6 +1,12 @@
 -- MathModule
 
+--// SERVICES 
+
+local TweenService = game:GetService("TweenService")
+
 --// VARIABLES 
+
+const INFO = TweenInfo.new(0.5, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out)
 
 const OFFSETS = {
   [1] = {
@@ -44,8 +50,12 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
       end
     end
   end
+  local tweens: {Tween} = {}
   for i = 1, new_amount do
-    
+    table.insert(tweens, TweenService:Create(troop_folder:FindFirstChild(tostring(i)), INFO, {Position = _GetVector(OFFSETS[i])})
+  end
+  for _, tween: Tween in tweens do 
+    task.spawn(tween.Play)
   end
 end
 

@@ -39,12 +39,12 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
   local troop_folder: Folder = tile.Troops
   if change > 0 then
     for i = 1, change do
-      local new_troop: Model = troop_folder:FindFirstChild(old_amount):Clone()
+      local new_troop: Model = troop_folder:FindFirstChild(tostring(old_amount)):Clone()
       new_troop.Name = tostring(old_amount + i)
     end
   else
     for i = old_amount, new_amount, -1 do
-      local troop: Model = troop_folder:FindFirstChild(old_amount)
+      local troop: Model = troop_folder:FindFirstChild(tostring(i))
       if troop then
         troop:Destroy()
       end
@@ -52,10 +52,20 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
   end
   local tweens: {Tween} = {}
   for i = 1, new_amount do
-    table.insert(tweens, TweenService:Create(troop_folder:FindFirstChild(tostring(i)), INFO, {Position = _GetVector(OFFSETS[i])})
-  end
-  for _, tween: Tween in tweens do 
-    task.spawn(tween.Play)
+    local troop: Model = troop_folder:FindFirstChild(tostring(i))
+    local value = Instance.new(CFrameValue)
+    value.Value = troop:GetPivot()
+    local connection = value:GetPropertyChangedSignal("Value"):Connect(function()
+      if troop.Parent then
+        troop:PivotTo(value.Value)
+      end
+    end)
+    local tween = TweenService:Create(value, INFO, {Value = troop:GetPivot() * CFrame.new(_GetVector(OFFSETS[new_amount][i]))})
+    tween.Completed:Once(function()
+      connection:Disconnect()
+      value:Destroy()
+    end)
+    tween:Play()
   end
 end
 

@@ -55,7 +55,6 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
     end
   end
   
-  local tweens: {Tween} = {}
   for i = 1, new_amount do
     local troop: Model = troop_folder:FindFirstChild(tostring(i))
     local value = Instance.new(CFrameValue)

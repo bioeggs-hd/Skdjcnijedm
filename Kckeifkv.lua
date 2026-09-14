@@ -35,6 +35,10 @@ end
 local MathModule = {}
 
 function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: number)
+  if old_amount == new_amount then
+    return
+  end
+  
   local change: number = new_amount - old_amount
   local troop_folder: Folder = tile.Troops
   if change > 0 then
@@ -50,6 +54,7 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
       end
     end
   end
+  
   local tweens: {Tween} = {}
   for i = 1, new_amount do
     local troop: Model = troop_folder:FindFirstChild(tostring(i))

@@ -28,4 +28,25 @@ end
 
 local MathModule = {}
 
+function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: number)
+  local change: number = new_amount - old_amount
+  local troop_folder: Folder = tile.Troops
+  if change > 0 then
+    for i = 1, change do
+      local new_troop: Model = troop_folder:FindFirstChild(old_amount):Clone()
+      new_troop.Name = tostring(old_amount + i)
+    end
+  else
+    for i = old_amount, new_amount, -1 do
+      local troop: Model = troop_folder:FindFirstChild(old_amount)
+      if troop then
+        troop:Destroy()
+      end
+    end
+  end
+  for i = 1, new_amount do
+    
+  end
+end
+
 return MathModule

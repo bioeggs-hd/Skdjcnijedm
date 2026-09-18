@@ -102,13 +102,10 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
 	
 	local old_cannon_amount: number = math.floor(old_amount / 10)
 	local new_cannon_amount: number = math.floor(new_amount / 10)
-
 	local old_troop_amount: number = old_amount % 10
 	local new_troop_amount: number = new_amount % 10
-
 	local old_model_amount: number = old_cannon_amount + old_troop_amount
 	local new_model_amount: number = new_cannon_amount + new_troop_amount
-
 	local troop_folder: Folder = tile.Troops
 	local offsets = OFFSETS[new_model_amount]
 

@@ -131,7 +131,6 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
 	end
 
 	local kept_cannon_amount: number = math.min(#old_cannons, new_cannon_amount)
-
 	local kept_troop_amount: number = math.min(#old_troops, new_troop_amount)
 
 	for i = kept_cannon_amount + 1, #old_cannons do

@@ -82,13 +82,7 @@ local function _RemoveModel(model: Model)
 end
 
 local function _CreateModel(tile: Model, is_cannon: boolean, index: number): Model
-	local model: Model
-
-	if is_cannon then
-		model = CANNON_MODEL:Clone()
-	else
-		model = TROOP_MODEL:Clone()
-	end
+	local model: Model = is_cannon and CANNON_MODEL:Clone() or TROOP_MODEL:Clone()
 
 	model.Name = tostring(index)
 	model.Parent = tile.Troops

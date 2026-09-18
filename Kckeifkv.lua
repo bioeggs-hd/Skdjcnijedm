@@ -52,24 +52,20 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
     end
   end
 
-  local cannon_amount: number = math.floor(new_amount / 10)
-  local troop_amount: number = new_amount % 10
+  -- Instantiating
+  local old_cannon_amount: number = math.floor(old_amount / 10)
+  local new_cannon_amount: number = math.floor(new_amount / 10)
+  local old_troop_amount: number = old_amount % 10
+  local new_troop_amount: number = new_amount % 10
   local change: number = new_amount - old_amount
   local troop_folder: Folder = tile.Troops
-  if change > 0 then
-    for i = 1, change do
-      local new_troop: Model = troop_folder:FindFirstChild(tostring(old_amount)):Clone()
-      new_troop.Name = tostring(old_amount + i)
-    end
-  else
-    for i = old_amount, new_amount, -1 do
-      local troop: Model = troop_folder:FindFirstChild(tostring(i))
-      if troop then
-        troop:Destroy()
-      end
-    end
+  if new_cannon_amount > old_cannon_amount then
+    
+  elseif new_cannon_amount < old_cannon_amount then
+    
   end
-  
+
+  -- Tweening
   for i = 1, new_amount do
     local troop: Model = troop_folder:FindFirstChild(tostring(i))
     local value = Instance.new(CFrameValue)

@@ -172,71 +172,38 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
 	end
 
 	if kept_cannon_amount < new_cannon_amount then
-
 		for i = kept_cannon_amount + 1, new_cannon_amount do
-
-			_CreateModel(
-				tile,
-				true,
-				i
-			)
-
+			_CreateModel(tile, true, i)
 		end
-
 	end
-
-	-- Create missing troops.
 
 	if kept_troop_amount < new_troop_amount then
-
 		for i = kept_troop_amount + 1, new_troop_amount do
-
 			local index = new_cannon_amount + i
-
-			_CreateModel(
-				tile,
-				false,
-				index
-			)
-
+			_CreateModel(tile, false, index)
 		end
-
 	end
 
-	-- Tweening
-
 	for i = 1, new_model_amount do
-
 		local model = troop_folder:FindFirstChild(tostring(i))
-
 		if model then
-
 			local value = Instance.new(CFrameValue)
 			value.Value = model:GetPivot()
-
 			local connection = value:GetPropertyChangedSignal("Value"):Connect(function()
 				if model.Parent then
 					model:PivotTo(value.Value)
 				end
 			end)
 
-			local target = CFrame.new(
-				_GetVector(offsets[i]) + tile.CENTER.Position
-			)
+			local target = CFrame.new(_GetVector(offsets[i]) + tile.CENTER.Position)
 
-			local tween = TweenService:Create(value, INFO, {
-				Value = target
-			})
-
+			local tween = TweenService:Create(value, INFO, {Value = target})
 			tween.Completed:Once(function()
 				connection:Disconnect()
 				value:Destroy()
 			end)
-
 			tween:Play()
-
 		end
-
 	end
 end
 

@@ -2,9 +2,13 @@
 
 --// SERVICES 
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
 --// VARIABLES 
+
+const TROOP_MODEL: Model = ReplicatedStorage.TroopModel
+const CANNON_MODEL: Model = ReplicatedStorage.CannonModel
 
 const INFO = TweenInfo.new(0.5, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out)
 
@@ -38,7 +42,18 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
   if old_amount == new_amount then
     return
   end
-  
+
+  if old_amount == 0 then
+    for i = 1, new_amount do
+      local new_model = TroopModel:Clone()
+      new_model.Position = tile.CENTER.Position + Vector3.new(0, 1, 0)
+      new_model.Name = tostring(i)
+      new_model.Parent = tile.Troops
+    end
+  end
+
+  local cannon_amount: number = math.floor(new_amount / 10)
+  local troop_amount: number = new_amount % 10
   local change: number = new_amount - old_amount
   local troop_folder: Folder = tile.Troops
   if change > 0 then

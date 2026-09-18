@@ -106,9 +106,9 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
 	local new_troop_amount: number = new_amount % 10
 	local old_model_amount: number = old_cannon_amount + old_troop_amount
 	local new_model_amount: number = new_cannon_amount + new_troop_amount
+	
 	local troop_folder: Folder = tile.Troops
 	local offsets = OFFSETS[new_model_amount]
-
 	assert(offsets, "Missing OFFSETS[" .. tostring(new_model_amount) .. "]")
 
 	local old_cannons = {}

@@ -47,15 +47,11 @@ local function _TweenModel(model: Model, target: CFrame)
 		end
 	end)
 
-	local tween = TweenService:Create(value, INFO, {
-		Value = target
-	})
-
+	local tween = TweenService:Create(value, INFO, {Value = target})
 	tween.Completed:Once(function()
 		connection:Disconnect()
 		value:Destroy()
 	end)
-
 	tween:Play()
 end
 
@@ -85,12 +81,7 @@ local function _RemoveModel(model: Model)
 	tween:Play()
 end
 
-local function _CreateModel(
-	tile: Model,
-	is_cannon: boolean,
-	index: number
-): Model
-
+local function _CreateModel(tile: Model, is_cannon: boolean, index: number): Model
 	local model: Model
 
 	if is_cannon then
@@ -101,14 +92,7 @@ local function _CreateModel(
 
 	model.Name = tostring(index)
 	model.Parent = tile.Troops
-
-	-- Spawn the model slightly above the center first.
-	-- It will then tween to its actual position.
-	model:PivotTo(
-		CFrame.new(
-			tile.CENTER.Position + Vector3.new(0, 1, 0)
-		)
-	)
+	model:PivotTo(CFrame.new(tile.CENTER.Position + Vector3.new(0, -1, 0)))
 
 	return model
 end
@@ -118,13 +102,10 @@ end
 local MathModule = {}
 
 function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: number)
-
 	if old_amount == new_amount then
 		return
 	end
-
-	-- Instantiating
-
+	
 	local old_cannon_amount: number = math.floor(old_amount / 10)
 	local new_cannon_amount: number = math.floor(new_amount / 10)
 
@@ -135,30 +116,9 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
 	local new_model_amount: number = new_cannon_amount + new_troop_amount
 
 	local troop_folder: Folder = tile.Troops
-
-	-- OFFSETS is based on the amount of visible models,
-	-- not the actual troop amount.
-	--
-	-- 14 troops = 1 cannon + 4 troops = 5 models
-	-- therefore OFFSETS[5]
 	local offsets = OFFSETS[new_model_amount]
 
-	assert(
-		offsets,
-		"Missing OFFSETS[" .. tostring(new_model_amount) .. "]"
-	)
-
-	-- Store the current models before changing their names.
-	--
-	-- Cannons are always the first indices.
-	-- Therefore, based on old_amount:
-	--
-	-- 24 troops:
-	-- 1, 2 = cannons
-	-- 3, 4, 5, 6 = troops
-	--
-	-- We can therefore determine the model type
-	-- entirely from its current index.
+	assert(offsets, "Missing OFFSETS[" .. tostring(new_model_amount) .. "]")
 
 	local old_cannons = {}
 	local old_troops = {}
@@ -179,36 +139,9 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
 		end
 	end
 
-	-- The amount of existing models we can keep.
+	local kept_cannon_amount: number = math.min(#old_cannons, new_cannon_amount)
 
-	local kept_cannon_amount: number = math.min(
-		#old_cannons,
-		new_cannon_amount
-	)
-
-	local kept_troop_amount: number = math.min(
-		#old_troops,
-		new_troop_amount
-	)
-
-	-- Rename all models that are being removed first.
-	--
-	-- This prevents duplicate names while the indices are
-	-- being reorganized.
-	--
-	-- Example 24 -> 19:
-	--
-	-- Old:
-	-- 1 = cannon
-	-- 2 = cannon
-	-- 3-6 = troops
-	--
-	-- New:
-	-- 1 = cannon
-	-- 2-10 = troops
-	--
-	-- Cannon 2 is renamed temporarily and removed.
-	-- The old troops can then become indices 2-5.
+	local kept_troop_amount: number = math.min(#old_troops, new_troop_amount)
 
 	for i = kept_cannon_amount + 1, #old_cannons do
 		local cannon = old_cannons[i]
@@ -224,25 +157,11 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
 		_RemoveModel(troop)
 	end
 
-	-- Reassign the existing cannons to the first indices.
-	--
-	-- Cannons ALWAYS occupy the first indices.
-
 	for i = 1, kept_cannon_amount do
 		local cannon = old_cannons[i]
 
 		cannon.Name = tostring(i)
 	end
-
-	-- Reassign the existing troops after all cannons.
-	--
-	-- This is what allows something like:
-	--
-	-- 24 -> 19
-	--
-	-- old troop indices 3-6
-	-- to become
-	-- new troop indices 2-5.
 
 	for i = 1, kept_troop_amount do
 		local troop = old_troops[i]
@@ -251,8 +170,6 @@ function MathModule.TweenTroops(tile: Model, old_amount: number, new_amount: num
 
 		troop.Name = tostring(new_index)
 	end
-
-	-- Create missing cannons.
 
 	if kept_cannon_amount < new_cannon_amount then
 
